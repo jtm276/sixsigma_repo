@@ -17,9 +17,14 @@ if (!def %in% bl$name) {
   git_branch_create(def, paste0("origin/", def))
 }
 
-# --- Step 4: Check out the branch and set upstream tracking ---
+# --- Step 4: Check out the branch and set upstream tracking (correct signature) ---
 git_branch_checkout(def)
-git_branch_set_upstream(name = def, remote = "origin", upstream = def)
+# Upstream must be "origin/main" (or "origin/master")
+upstream_ref <- paste0("origin/", def)
+cat("== set upstream: ", def, " -> ", upstream_ref, " ==\n", sep = "")
+try({
+  git_branch_set_upstream(def, upstream_ref)
+}, silent = TRUE)
 
 # --- Step 5: Pull to sync with GitHub ---
 cat("== git_pull ==\n")
